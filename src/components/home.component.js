@@ -13,29 +13,29 @@ export default class Home extends Component {
 
   componentDidMount() {
     UserService.getPublicContent().then(
-      response => {
-        this.setState({
-          content: response.data
-        });
-      },
-      error => {
-        this.setState({
-          content:
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString()
-        });
-      }
+        response => {
+          this.setState({
+            content: response.data
+          });
+        },
+        error => {
+          this.setState({
+            content:
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString()
+          });
+        }
     );
   }
 
   render() {
     return (
-      <div className="container">
-        <header className="jumbotron">
-          <h3>{this.state.content}</h3>
-        </header>
-      </div>
+        <main role="main" className="text-center col-xs-12">
+            <h1 className="cover-heading">Archivizer</h1>
+            <p className="lead">Data archiving system for small and medium-sized companies.
+            </p>
+        </main>
     );
   }
 }

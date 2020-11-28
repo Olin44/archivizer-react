@@ -6,6 +6,7 @@ import "./App.css";
 import AuthService from "./services/auth.service";
 
 import Login from "./components/login.component";
+import NewUser from "./components/new-user.component";
 import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
@@ -22,6 +23,7 @@ class App extends Component {
       showModeratorBoard: false,
       showAdminBoard: false,
       currentUser: undefined,
+      showUserBoard: false
     };
   }
 
@@ -31,6 +33,7 @@ class App extends Component {
     if (user) {
       this.setState({
         currentUser: user,
+        showUserBoard: user.roles.includes("ROLE_USER"),
         showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
         showAdminBoard: user.roles.includes("ROLE_ADMIN"),
       });
@@ -42,21 +45,15 @@ class App extends Component {
   }
 
   render() {
-    const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
+    const { currentUser, showModeratorBoard, showAdminBoard, showUserBoard } = this.state;
 
     return (
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
           <Link to={"/"} className="navbar-brand">
-            bezKoder
+            Archivizer
           </Link>
           <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
-              </Link>
-            </li>
-
             {showModeratorBoard && (
               <li className="nav-item">
                 <Link to={"/mod"} className="nav-link">
@@ -73,7 +70,7 @@ class App extends Component {
               </li>
             )}
 
-            {currentUser && (
+            {showUserBoard && (
               <li className="nav-item">
                 <Link to={"/user"} className="nav-link">
                   User
@@ -121,6 +118,7 @@ class App extends Component {
             <Route path="/user" component={BoardUser} />
             <Route path="/mod" component={BoardModerator} />
             <Route path="/admin" component={BoardAdmin} />
+            <Route path="/newUser" component={NewUser} />
           </Switch>
         </div>
       </div>

@@ -55,8 +55,12 @@ export default class Login extends Component {
     if (this.checkBtn.context._errors.length === 0) {
       AuthService.login(this.state.username, this.state.password).then(
         () => {
-          this.props.history.push("/profile");
-          window.location.reload();
+          if(AuthService.getCurrentUser().roles.includes("ROLE_USER")) {
+            this.props.history.push("/user");
+            window.location.reload();
+          } else{
+            this.props.history.push("/newUser");
+          }
         },
         error => {
           const resMessage =
@@ -125,7 +129,7 @@ export default class Login extends Component {
                 disabled={this.state.loading}
               >
                 {this.state.loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
+                  <span className="spinner-border spinner-border-sm"/>
                 )}
                 <span>Login</span>
               </button>
