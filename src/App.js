@@ -13,6 +13,8 @@ import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
 import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
+import SimpleUsersTable from "./components/UserTableService";
+import UserDetail from "./components/UserDetails"
 
 class App extends Component {
   constructor(props) {
@@ -45,11 +47,12 @@ class App extends Component {
   }
 
   render() {
-    const { currentUser, showModeratorBoard, showAdminBoard, showUserBoard } = this.state;
+    const { currentUser, showModeratorBoard, showAdminBoard, showUserBoard, UserDetail } = this.state;
 
     return (
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
+          
           <Link to={"/"} className="navbar-brand">
             Archivizer
           </Link>
@@ -61,7 +64,13 @@ class App extends Component {
                 </Link>
               </li>
             )}
-
+            { (
+                <li className="nav-item">
+                  <Link to={"/users"} className="nav-link">
+                    Users
+                  </Link>
+                </li>
+            )}
             {showAdminBoard && (
               <li className="nav-item">
                 <Link to={"/admin"} className="nav-link">
@@ -119,6 +128,8 @@ class App extends Component {
             <Route path="/mod" component={BoardModerator} />
             <Route path="/admin" component={BoardAdmin} />
             <Route path="/newUser" component={NewUser} />
+            <Route exact path="/users/:id" component={UserDetail} />
+            <Route exact path="/users" component={SimpleUsersTable} />
           </Switch>
         </div>
       </div>

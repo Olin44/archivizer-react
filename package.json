@@ -2,6 +2,9 @@
   "name": "archivizer-react",
   "version": "0.1.0",
   "private": true,
+  "resolutions": {
+    "@babel/preset-env": "7.5.5"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -9,6 +12,12 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "react": "^16.13.0",
+    "react-bootstrap-icons": "^1.1.0",
+    "react-bootstrap-table": "^4.3.1",
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-bootstrap-table2-editor": "^1.4.0",
+    "react-bootstrap-table2-filter": "^1.3.3",
+    "react-bootstrap-table2-paginator": "^2.1.2",
     "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
