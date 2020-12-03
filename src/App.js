@@ -13,7 +13,7 @@ import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
 import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
-import SimpleUsersTable from "./components/UserTableService";
+import SimpleUsersTable from "./components/simple-user-table.component";
 import UserDetail from "./components/UserDetails"
 
 class App extends Component {

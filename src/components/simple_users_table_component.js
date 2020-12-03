@@ -3,7 +3,6 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import '../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css'
 import filterFactory, {textFilter} from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import cellEditFactory from 'react-bootstrap-table2-editor';
 import { PencilFill, CheckSquare, CheckSquareFill } from 'react-bootstrap-icons';
 
 function formatYesNo(rowContent, row){
@@ -77,7 +76,7 @@ const columns = [
 const SimpleUserTable = (props) => {
     return (
         <div className="container">
-            <div className="row" className="hdr">
+            <div className="row hdr">
                 <div className="col-sm-12 btn btn-info">
                     Users table
                 </div>
@@ -90,7 +89,7 @@ const SimpleUserTable = (props) => {
                     data={props.data}
                     columns={columns}
                     filter={filterFactory()}
-                    pagination={paginationFactory(options)}
+                    pagination={paginationFactory(props.options)}
                 />
                 <p>{props.isFetching ? 'Fetching users...' : ''}</p>
             </div>
