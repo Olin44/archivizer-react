@@ -57,22 +57,9 @@ const columns = [
 
 export default function SimpleUsersTable(){
 
-    let defaultOptions = {
-        alwaysShowAllBtns: true,
-        sizePerPageList: [ {
-            text: '5', value: 5
-        }, {
-            text: '10', value: 10
-        }, {
-            text: 'PIZDA', value: 20
-        } ],
-        prePage: 'Prev',
-        nextPage: 'Next',
-        firstPage: 'First',
-        lastPage: 'Last',
-        paginationPosition: 'top',
-        showTotal: true,
-    }
+    let defaultOptions =
+        {pageStartIndex: '',
+        }
 
     let USER_SERVICE_URL = 'http://localhost:8080/api/users1';
     let config = {
@@ -116,23 +103,38 @@ export default function SimpleUsersTable(){
             }
         }
         fetchUsers();
-    }, [sizePerPage, page])
+    }, [sizePerPage, page, options])
     if (isLoading) {
         return <div className="App">Loading...</div>;
     }
+    console.log(options);
 
-    return (
-        <div>
-            <BootstrapTable
-                remote
-                keyField="id"
-                data={data}
-                columns={columns}
-                filter={filterFactory()}
-                onTableChange={handleTableChange}
-                onSizePerPageChange = {onSizePerPageChange}
-                pagination={paginationFactory(defaultOptions)}
-            />
-        </div>
+    return(
+    <PaginationProvider
+        pagination={ paginationFactory(defaultOptions) }
+    >
+        {
+            ({
+                 paginationProps,
+                 paginationTableProps
+             }) => (
+                <div>
+                    <PaginationListStandalone
+                        { ...paginationProps }
+                    />
+                    <BootstrapTable
+                        remote
+                        keyField="id"
+                        data={data}
+                        columns={columns}
+                        filter={filterFactory()}
+                        onTableChange={handleTableChange}
+                        onSizePerPageChange = {onSizePerPageChange}
+                        { ...paginationTableProps }
+                    />
+                </div>
+            )
+        }
+    </PaginationProvider>
     );
 }
