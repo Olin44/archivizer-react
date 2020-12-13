@@ -13,7 +13,7 @@ import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
 import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
-import Container from "./components/simple-user-table2.component";
+import EnhancedTable from "./components/simple-user-table2.component";
 import UserDetail from "./components/UserDetails"
 
 class App extends Component {
@@ -129,7 +129,7 @@ class App extends Component {
             <Route path="/admin" component={BoardAdmin} />
             <Route path="/newUser" component={NewUser} />
             <Route exact path="/users/:id" component={UserDetail} />
-            <Route exact path="/users" component={Container} />
+            <Route exact path="/users" component={EnhancedTable} />
           </Switch>
         </div>
       </div>
