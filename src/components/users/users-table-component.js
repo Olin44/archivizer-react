@@ -305,7 +305,13 @@ export default class EnhancedTable extends Component {
     };
 
     handleChangeRowsPerPage = (event) => {
-        let newRowsPerPage = parseInt(event.target.value, 10)
+        console.log((event.target.value));
+        let newRowsPerPage = parseInt(event.target.value, 10);{
+            if (newRowsPerPage > this.state.size){
+                newRowsPerPage = this.state.size;
+                this.setState({page : 0});
+            }
+        }
         this.setState({rowsPerPage: newRowsPerPage});
         this.fetchDataAboutUsersFromApi(0, newRowsPerPage);
         console.log(this.state);
@@ -384,7 +390,7 @@ export default class EnhancedTable extends Component {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPageOptions={[5, 10, 25, this.state.size].sort((a, b) => a - b)}
                         component="div"
                         count={this.state.size}
                         rowsPerPage={this.state.rowsPerPage}
