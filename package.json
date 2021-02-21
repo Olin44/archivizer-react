@@ -27,7 +27,8 @@
     "react-scripts": "3.4.0",
     "react-validation": "^3.0.7",
     "styles": "^0.2.1",
-    "validator": "^12.2.0"
+    "validator": "^12.2.0",
+    "yup": "^0.32.8"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -49,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "swagger-ui": "^3.40.0"
   }
 }

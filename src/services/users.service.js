@@ -18,4 +18,8 @@ export default new class UserService{
         return axios.get(this.USER_SERVICE_URL + '/count', this.config)
     }
 
+    getUsersDetails(id){
+        return axios.get(this.USER_SERVICE_URL + '/' + id + '/details', this.config)
+    }
+
 }

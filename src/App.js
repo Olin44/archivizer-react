@@ -13,9 +13,11 @@ import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
 import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
-import EnhancedTable from "./components/simple-user-table2.component";
-import UserDetail from "./components/UserDetails"
-
+import EnhancedTable from "./components/users/users-table-component";
+import UserDetail from "./components/user-details/users-details-component"
+import SwaggerUI from "./components/swagger/swagger-component";
+import Language from "./components/dicionaries/language-dict-component";
+import LanguageDetails from "./components/dicionaries/language-details"
 class App extends Component {
   constructor(props) {
     super(props);
@@ -47,7 +49,7 @@ class App extends Component {
   }
 
   render() {
-    const { currentUser, showModeratorBoard, showAdminBoard, showUserBoard, UserDetail } = this.state;
+    const { currentUser, showModeratorBoard, showAdminBoard, showUserBoard} = this.state;
 
     return (
       <div>
@@ -71,6 +73,14 @@ class App extends Component {
                   </Link>
                 </li>
             )}
+
+            { (
+                <li className="nav-item">
+                  <Link to={"/swagger"} className="nav-link">
+                    Swagger
+                  </Link>
+                </li>
+            )}
             {showAdminBoard && (
               <li className="nav-item">
                 <Link to={"/admin"} className="nav-link">
@@ -85,6 +95,13 @@ class App extends Component {
                   User
                 </Link>
               </li>
+            )}
+            { (
+                <li className="nav-item">
+                  <Link to={"/languages"} className="nav-link">
+                    Languages
+                  </Link>
+                </li>
             )}
           </div>
 
@@ -116,9 +133,9 @@ class App extends Component {
               </li>
             </div>
           )}
-        </nav>
 
-        <div className="container mt-3">
+        </nav>
+        <div>
           <Switch>
             <Route exact path={["/", "/home"]} component={Home} />
             <Route exact path="/login" component={Login} />
@@ -128,11 +145,16 @@ class App extends Component {
             <Route path="/mod" component={BoardModerator} />
             <Route path="/admin" component={BoardAdmin} />
             <Route path="/newUser" component={NewUser} />
-            <Route exact path="/users/:id" component={UserDetail} />
+            <Route exact path="/users/:id" component={(routerProps) => <UserDetail id={routerProps.match.params.id}/>}/>
+            <Route exact path="/languages/:id" component={(routerProps) => <LanguageDetails id={routerProps.match.params.id}/>}/>
             <Route exact path="/users" component={EnhancedTable} />
+            <Route exact path="/swagger" component={SwaggerUI} />
+            <Route exact path="/languages" component={Language} />
+
           </Switch>
         </div>
       </div>
+
     );
   }
 }
