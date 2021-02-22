@@ -26,11 +26,16 @@ import QualificationsService from "../../services/qualifications.service";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
-function createData(id, type, description, archivizeAfter, canByDeleted) {
-    console.log(id, type, description, archivizeAfter, canByDeleted)
-    let archivizeAfterAsString = 'Day: '+ archivizeAfter['day'] + ' Months: ' + archivizeAfter['month'] + ' Years: ' + archivizeAfter['year'];
-    console.log(id, type, description, archivizeAfterAsString, canByDeleted)
-    return {id, type, description, archivizeAfterAsString, canByDeleted};
+function createData(id, type, description, archivizeAfter, canBeDeleted) {
+    console.log(id, type, description, archivizeAfter, canBeDeleted)
+    let archivizeAfterAsString = null;
+    if(archivizeAfter != null) {
+        archivizeAfterAsString = 'Day: ' + archivizeAfter['day'] + ' Months: ' + archivizeAfter['month'] + ' Years: ' + archivizeAfter['year'];
+    } else {
+        archivizeAfterAsString = 'Undefined';
+    }
+    console.log(id, type, description, archivizeAfterAsString, canBeDeleted)
+    return {id, type, description, archivizeAfterAsString, canBeDeleted: canBeDeleted};
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -64,7 +69,7 @@ const headCells = [
     { id: 'type', numeric: false, disablePadding: false, label: 'Code' },
     { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
     { id: 'archivizeAfter', numeric: false, disablePadding: false, label: 'Archivize after' },
-    { id: 'canByDeleted', numeric: false, disablePadding: false, label: 'Can by deleted'},
+    { id: 'canBeDeleted', numeric: false, disablePadding: false, label: 'Can by deleted'},
     {id: 'action_create', numeric: false, disablePadding: true, label: 'Create'},
     {id: 'action_update', numeric: false, disablePadding: true, label: 'Update'},
     {id: 'action_delete', numeric: false, disablePadding: true, label: 'Delete'}
@@ -143,13 +148,6 @@ const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
     const { numSelected, selectedList } = props;
 
-    function handleClick(event) {
-        console.log(selectedList);
-        console.log(numSelected);
-        UserService.activateUsersAccounts(selectedList)
-            .then(window.location.reload(true));
-    }
-
     return (
         <Toolbar
             className={clsx(classes.root, {
@@ -219,7 +217,7 @@ export default class EnhancedTable extends Component {
             let tempRows = [];
             for(let i = 0; i < response.length; i++)
             {
-                tempRow = createData(response[i]['id'], response[i]['type'], response[i]['description'], response[i]['archivizeAfterResponse'], response[i]['canByDeleted']);
+                tempRow = createData(response[i]['id'], response[i]['type'], response[i]['description'], response[i]['archivizeAfterResponse'], response[i]['canBeDeleted']);
                 console.log(tempRow)
                 tempRows.push(tempRow);
             }
@@ -352,7 +350,7 @@ export default class EnhancedTable extends Component {
                                                 <TableCell align="left">{row.type}</TableCell>
                                                 <TableCell align="left">{row.description}</TableCell>
                                                 <TableCell align="left">{row.archivizeAfterAsString}</TableCell>
-                                                <TableCell align="left">{this.formatYesNo(row.canByDeleted)}</TableCell>
+                                                <TableCell align="left">{this.formatYesNo(row.canBeDeleted)}</TableCell>
                                                 <TableCell align="left"> <a href={`/qualification/`}>
                                                     <AddIcon/>
                                                 </a></TableCell>

@@ -18,4 +18,8 @@ export default new class LanguageService{
         return axios.post(this.SERVICE_URL + id, body)
     }
 
+    create(body){
+        return axios.post(this.SERVICE_URL, body)
+    }
+
 }

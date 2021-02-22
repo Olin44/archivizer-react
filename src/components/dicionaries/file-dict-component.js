@@ -389,10 +389,10 @@ export default class EnhancedTable extends Component {
                 console.log(error.response.data['violations'].length);
                 for (let i=0; i < error.response.data['violations'].length; i++) {
                     violationsString = violationsString
-                            .concat('File id: ' + error.response.data['violations'][i]['id'])
-                            .concat(', ')
-                            .concat('File title: ' +  error.response.data['violations'][i]['title'])
-                            .concat('.\n');
+                        .concat('File id: ' + error.response.data['violations'][i]['id'])
+                        .concat(', ')
+                        .concat('File title: ' +  error.response.data['violations'][i]['title'])
+                        .concat('.\n');
                 }
                 alert(error.response.data['message'].toString().concat(': Related files exist!') + '\n' + violationsString);
             }});
