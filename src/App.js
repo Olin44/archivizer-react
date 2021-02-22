@@ -18,6 +18,8 @@ import UserDetail from "./components/user-details/users-details-component"
 import SwaggerUI from "./components/swagger/swagger-component";
 import Language from "./components/dicionaries/language-dict-component";
 import LanguageDetails from "./components/dicionaries/language-details"
+import Qualifications from "./components/dicionaries/qualifications-dict-component";
+import QualificationDetails from "./components/dicionaries/qualification-details"
 class App extends Component {
   constructor(props) {
     super(props);
@@ -103,6 +105,13 @@ class App extends Component {
                   </Link>
                 </li>
             )}
+            { (
+                <li className="nav-item">
+                  <Link to={"/qualifications"} className="nav-link">
+                    Qualifications
+                  </Link>
+                </li>
+            )}
           </div>
 
           {currentUser ? (
@@ -147,9 +156,12 @@ class App extends Component {
             <Route path="/newUser" component={NewUser} />
             <Route exact path="/users/:id" component={(routerProps) => <UserDetail id={routerProps.match.params.id}/>}/>
             <Route exact path="/languages/:id" component={(routerProps) => <LanguageDetails id={routerProps.match.params.id}/>}/>
+            <Route exact path="/qualification/:id" component={(routerProps) => <QualificationDetails id={routerProps.match.params.id}/>}/>
+
             <Route exact path="/users" component={EnhancedTable} />
             <Route exact path="/swagger" component={SwaggerUI} />
             <Route exact path="/languages" component={Language} />
+            <Route exact path="/qualifications" component={Qualifications} />
 
           </Switch>
         </div>

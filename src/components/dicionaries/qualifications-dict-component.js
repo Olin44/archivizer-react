@@ -22,11 +22,14 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import UserService from "../../services/users.service";
 import {CheckSquare, CheckSquareFill, PencilFill} from "react-bootstrap-icons";
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import LanguageService from "../../services/languages.servive";
+import QualificationsService from "../../services/qualifications.service";
 import DeleteIcon from '@material-ui/icons/Delete';
 
-function createData(id, code, name) {
-    return { id, code, name };
+function createData(id, type, description, archivizeAfter, canByDeleted) {
+    console.log(id, type, description, archivizeAfter, canByDeleted)
+    let archivizeAfterAsString = 'Day: '+ archivizeAfter['day'] + ' Months: ' + archivizeAfter['month'] + ' Years: ' + archivizeAfter['year'];
+    console.log(id, type, description, archivizeAfterAsString, canByDeleted)
+    return {id, type, description, archivizeAfterAsString, canByDeleted};
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -57,8 +60,10 @@ function stableSort(array, comparator) {
 
 const headCells = [
     { id: 'id', numeric: false, disablePadding: true, label: 'Id' },
-    { id: 'code', numeric: false, disablePadding: false, label: 'Code' },
-    { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+    { id: 'type', numeric: false, disablePadding: false, label: 'Code' },
+    { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
+    { id: 'archivizeAfter', numeric: false, disablePadding: false, label: 'Archivize after' },
+    { id: 'canByDeleted', numeric: false, disablePadding: false, label: 'Can by deleted'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Update'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Delete'}
 
@@ -158,21 +163,6 @@ const EnhancedTableToolbar = (props) => {
                     Languages
                 </Typography>
             )}
-
-            {/*{numSelected > 0 ? (*/}
-            {/*    <Tooltip title="Activate selected users accounts">*/}
-            {/*        <IconButton aria-label="activate selected accounts" onClick={(event) => handleClick(event)}>*/}
-            {/*            <CheckBoxIcon*/}
-            {/*            />*/}
-            {/*        </IconButton>*/}
-            {/*    </Tooltip>*/}
-            {/*) : (*/}
-            {/*    <Tooltip title="Filter list">*/}
-            {/*        <IconButton aria-label="filter list">*/}
-            {/*            <FilterListIcon />*/}
-            {/*        </IconButton>*/}
-            {/*    </Tooltip>*/}
-            {/*)}*/}
         </Toolbar>
     );
 };
@@ -227,18 +217,19 @@ export default class EnhancedTable extends Component {
             let tempRows = [];
             for(let i = 0; i < response.length; i++)
             {
-                tempRow = createData(response[i]['id'], response[i]['code'], response[i]['name']);
+                tempRow = createData(response[i]['id'], response[i]['type'], response[i]['description'], response[i]['archivizeAfterResponse'], response[i]['canByDeleted']);
+                console.log(tempRow)
                 tempRows.push(tempRow);
             }
             console.log(tempRows);
             return tempRows;
         }
-        LanguageService.getLanguages(page, rowsPerPage)
+        QualificationsService.getAllWithPagination(page, rowsPerPage)
             .then(response => this.setState({rows: mapDataFromApiToRows(response.data)}));
     }
 
     fetchLanguagesCountFromAp(){
-        LanguageService.getLanguagesListCount()
+        QualificationsService.getCount()
             .then(response => {console.log(response.data['count']); this.setState({size: response.data['count']})});
     }
 
@@ -356,9 +347,12 @@ export default class EnhancedTable extends Component {
                                                 <TableCell component="th" id={labelId} scope="row" padding="none">
                                                     {row.id}
                                                 </TableCell>
-                                                <TableCell align="left">{row.code}</TableCell>
-                                                <TableCell align="left">{row.name}</TableCell>
-                                                <TableCell align="left"> <a href={`/languages/${row.id}`}>
+                                                <TableCell align="left">{row.type}</TableCell>
+                                                <TableCell align="left">{row.description}</TableCell>
+                                                <TableCell align="left">{row.archivizeAfterAsString}</TableCell>
+                                                <TableCell align="left">{this.formatYesNo(row.canByDeleted)}</TableCell>
+
+                                                <TableCell align="left"> <a href={`/qualification/${row.id}`}>
                                                     <PencilFill/>
                                                 </a></TableCell>
                                                 <TableCell>
@@ -391,18 +385,18 @@ export default class EnhancedTable extends Component {
     handleDelete = (e, id) => {
         console.log(id);
         e.preventDefault();
-        LanguageService
-            .deleteLanguage(id)
+        QualificationsService
+            .deleteById(id)
             .then(r => alert('Language deleted!'))
             .catch(error => {if( error.response ){
                 let violationsString = ''
                 console.log(error.response.data['violations'].length);
                 for (let i=0; i < error.response.data['violations'].length; i++) {
                     violationsString = violationsString
-                            .concat('File id: ' + error.response.data['violations'][i]['id'])
-                            .concat(', ')
-                            .concat('File title: ' +  error.response.data['violations'][i]['title'])
-                            .concat('.\n');
+                        .concat('File id: ' + error.response.data['violations'][i]['id'])
+                        .concat(', ')
+                        .concat('File title: ' +  error.response.data['violations'][i]['title'])
+                        .concat('.\n');
                 }
                 alert(error.response.data['message'].toString().concat(': Related files exist!') + '\n' + violationsString);
             }});

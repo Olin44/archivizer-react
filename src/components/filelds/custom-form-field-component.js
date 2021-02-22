@@ -18,6 +18,7 @@ export default class CustomFormFieldComponent extends Component {
 
     handleChange(event){
         this.sendBackData(event.target.value);
+        console.log(event);
         this.props.validationSchema
             .validate(event.target.value)
             .then(this.setState({error : false, errorMessage: ""}))

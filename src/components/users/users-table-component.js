@@ -59,8 +59,6 @@ const headCells = [
     { id: 'login', numeric: false, disablePadding: true, label: 'Login' },
     { id: 'email', numeric: false, disablePadding: false, label: 'email' },
     { id: 'isActive', numeric: false, disablePadding: false, label: 'isActive' },
-    // { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-    // { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
     {id: 'action', numeric: false, disablePadding: true, label: 'Actions'}
 ];
 
@@ -221,7 +219,7 @@ export default class EnhancedTable extends Component {
             size: 0};
     }
 
-    fetchDataAboutUsersFromApi(page, rowsPerPage){
+    fetchDataFromApi(page, rowsPerPage){
         function mapDataFromApiToRows(response){
             let tempRow;
             let tempRows = [];
@@ -260,7 +258,7 @@ export default class EnhancedTable extends Component {
 
     componentDidMount(){
         this.fetchUsersCountFromAp();
-        this.fetchDataAboutUsersFromApi(this.state.page, this.state.rowsPerPage);
+        this.fetchDataFromApi(this.state.page, this.state.rowsPerPage);
         console.log(this.state);
     }
 
@@ -299,13 +297,11 @@ export default class EnhancedTable extends Component {
     };
 
     handleChangePage = (event, newPage) => {
-        console.log(newPage);
-        this.fetchDataAboutUsersFromApi(newPage, this.state.rowsPerPage);
+        this.fetchDataFromApi(newPage, this.state.rowsPerPage);
         this.setState({page: newPage});
     };
 
     handleChangeRowsPerPage = (event) => {
-        console.log((event.target.value));
         let newRowsPerPage = parseInt(event.target.value, 10);{
             if (newRowsPerPage > this.state.size){
                 newRowsPerPage = this.state.size;
@@ -313,10 +309,7 @@ export default class EnhancedTable extends Component {
             }
         }
         this.setState({rowsPerPage: newRowsPerPage});
-        this.fetchDataAboutUsersFromApi(0, newRowsPerPage);
-        console.log(this.state);
-
-
+        this.fetchDataFromApi(0, newRowsPerPage);
     };
 
     handleChangeDense = (event) => {
