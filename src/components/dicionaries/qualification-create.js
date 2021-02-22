@@ -19,8 +19,14 @@ export default class UsersDetailsComponent extends Component {
         super(props);
         this.state = {
             id: props.id,
-            usersDetails: null,
-            loaded: false,
+            loaded: true,
+            usersDetails: {
+                type: null,
+                description: null,
+                archivizeAfterRequest: null,
+                canBeDeleted: null
+            },
+            canBeDeleted : false,
             roles: [],
             validationSchema: {
                 type: yup.string().required(),
@@ -50,7 +56,7 @@ export default class UsersDetailsComponent extends Component {
     }
 
     componentDidMount() {
-        this.fetchObjectFromApi();
+        // this.fetchObjectFromApi();
     }
 
     async fetchObjectFromApi(){
@@ -97,16 +103,16 @@ export default class UsersDetailsComponent extends Component {
     }
 
     canBeDeletedOnChange = (childData) => {
-        let copyFoo = { ...this.state.usersDetails, canBeDeleted: childData };
-        this.setState({usersDetails : copyFoo}, function () {
-            console.log(this.state.usersDetails);
+        let copyFoo = { ...this.state, canBeDeleted: childData };
+        this.setState(copyFoo, function () {
+            console.log(this.state);
         });
     }
 
     handleUpdateClick(e) {
         e.preventDefault();
         let archivizeAfterRequest =  null;
-        if(this.state.usersDetails['canBeDeleted']){
+        if(this.state.canBeDeleted){
             archivizeAfterRequest = {day : this.state.archivizeAfter['day'],
                 month : this.state.archivizeAfter['month'],
                 year : this.state.archivizeAfter['year']
@@ -115,11 +121,11 @@ export default class UsersDetailsComponent extends Component {
         const body = {type: this.state.usersDetails['type'],
             description: this.state.usersDetails['description'],
             archivizeAfterRequest : archivizeAfterRequest,
-            canBeDeleted : this.state.usersDetails['canBeDeleted']
+            canBeDeleted : this.state.canBeDeleted
         };
         QualificationService
-            .update(this.state.usersDetails['id'], body)
-            .then(r => alert('User update!'))
+            .create(body)
+            .then(r => alert('Qualification created!'))
             .catch(error => {if( error.response ){
                 alert(error.response.data);
                 console.log(error.response.data);// => the response payload
@@ -141,40 +147,40 @@ export default class UsersDetailsComponent extends Component {
                                 </Typography>
                                 <Divider/>
                                 <CustomFormFieldComponent name={'description'} label={'Description'}
-                                                          required={false} defaultValue={this.state.usersDetails['description']}
+                                                          required={false} defaultValue={''}
                                                           validationSchema = { this.state.validationSchema.description}
                                                           parentCallback = {this.descriptionOnChange}
                                 />
                                 <CustomFormFieldComponent name={'type'} label={'type'}
-                                                          required={true} defaultValue={this.state.usersDetails['type']}
+                                                          required={true} defaultValue={''}
                                                           validationSchema = { this.state.validationSchema.type}
                                                           parentCallback = {this.typeOnChange}
                                 />
                                 <BooleanFormFieldComponent name={'canBeDeleted'}
                                                            label={"Can be deleted?"}
-                                                           checked ={this.state.usersDetails['canBeDeleted']}
+                                                           checked ={this.state.canBeDeleted}
                                                            disabled={false}
                                                            validationSchema = { this.state.validationSchema.canBeDeleted}
                                                            parentCallback = {this.canBeDeletedOnChange}
                                 />
-                                {this.state.usersDetails['canBeDeleted'] ? (
+                                {this.state.canBeDeleted ? (
                                     <div>
-                                Archivizer after(time after which the file will be deleted)
-                                <CustomFormFieldComponent name={'day'} label={'day'}
-                                                          required={true} defaultValue={this.state.archivizeAfter['day']}
-                                                          validationSchema = { this.state.validationSchema.day}
-                                                          parentCallback = {this.dayOnChange}
-                                />
-                                <CustomFormFieldComponent name={'month'} label={'month'}
-                                                          required={true} defaultValue={this.state.archivizeAfter['month']}
-                                                          validationSchema = { this.state.validationSchema.month}
-                                                          parentCallback = {this.monthOnChange}
-                                />
-                                <CustomFormFieldComponent name={'year'} label={'year'}
-                                                          required={true} defaultValue={this.state.archivizeAfter['year']}
-                                                          validationSchema = { this.state.validationSchema.year}
-                                                          parentCallback = {this.yearOnChange}
-                                />
+                                        Archivizer after(time after which the file will be deleted)
+                                        <CustomFormFieldComponent name={'day'} label={'Day'}
+                                                                  required={true} defaultValue={'Day'}
+                                                                  validationSchema = { this.state.validationSchema.day}
+                                                                  parentCallback = {this.dayOnChange}
+                                        />
+                                        <CustomFormFieldComponent name={'month'} label={'Month'}
+                                                                  required={true} defaultValue={'Month'}
+                                                                  validationSchema = { this.state.validationSchema.month}
+                                                                  parentCallback = {this.monthOnChange}
+                                        />
+                                        <CustomFormFieldComponent name={'year'} label={'Year'}
+                                                                  required={true} defaultValue={'Years'}
+                                                                  validationSchema = { this.state.validationSchema.year}
+                                                                  parentCallback = {this.yearOnChange}
+                                        />
                                     </div>) : null}
                             </Grid>
                         </Grid>

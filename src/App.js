@@ -20,6 +20,8 @@ import Language from "./components/dicionaries/language-dict-component";
 import LanguageDetails from "./components/dicionaries/language-details"
 import Qualifications from "./components/dicionaries/qualifications-dict-component";
 import QualificationDetails from "./components/dicionaries/qualification-details"
+import QualificationCreate from "./components/dicionaries/qualification-create"
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -157,7 +159,7 @@ class App extends Component {
             <Route exact path="/users/:id" component={(routerProps) => <UserDetail id={routerProps.match.params.id}/>}/>
             <Route exact path="/languages/:id" component={(routerProps) => <LanguageDetails id={routerProps.match.params.id}/>}/>
             <Route exact path="/qualification/:id" component={(routerProps) => <QualificationDetails id={routerProps.match.params.id}/>}/>
-
+            <Route exact path="/qualification/" component={QualificationCreate}/>
             <Route exact path="/users" component={EnhancedTable} />
             <Route exact path="/swagger" component={SwaggerUI} />
             <Route exact path="/languages" component={Language} />

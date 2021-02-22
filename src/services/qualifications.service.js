@@ -26,4 +26,8 @@ export default new class QualificationsService{
         return axios.get(this.SERVICE_URL2 + id)
     }
 
+    create(body){
+        return axios.post(this.SERVICE_URL2, body)
+    }
+
 }

@@ -24,6 +24,7 @@ import {CheckSquare, CheckSquareFill, PencilFill} from "react-bootstrap-icons";
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import QualificationsService from "../../services/qualifications.service";
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 
 function createData(id, type, description, archivizeAfter, canByDeleted) {
     console.log(id, type, description, archivizeAfter, canByDeleted)
@@ -64,8 +65,9 @@ const headCells = [
     { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
     { id: 'archivizeAfter', numeric: false, disablePadding: false, label: 'Archivize after' },
     { id: 'canByDeleted', numeric: false, disablePadding: false, label: 'Can by deleted'},
-    {id: 'action', numeric: false, disablePadding: true, label: 'Update'},
-    {id: 'action', numeric: false, disablePadding: true, label: 'Delete'}
+    {id: 'action_create', numeric: false, disablePadding: true, label: 'Create'},
+    {id: 'action_update', numeric: false, disablePadding: true, label: 'Update'},
+    {id: 'action_delete', numeric: false, disablePadding: true, label: 'Delete'}
 
 ];
 
@@ -351,7 +353,9 @@ export default class EnhancedTable extends Component {
                                                 <TableCell align="left">{row.description}</TableCell>
                                                 <TableCell align="left">{row.archivizeAfterAsString}</TableCell>
                                                 <TableCell align="left">{this.formatYesNo(row.canByDeleted)}</TableCell>
-
+                                                <TableCell align="left"> <a href={`/qualification/`}>
+                                                    <AddIcon/>
+                                                </a></TableCell>
                                                 <TableCell align="left"> <a href={`/qualification/${row.id}`}>
                                                     <PencilFill/>
                                                 </a></TableCell>
