@@ -8,11 +8,16 @@ export default new class FilesService{
 
 
     getListCount(){
-        return axios.get(this.SERVICE_URL + '/count', this.config)
+        return axios.get(this.SERVICE_URL + '/count' + '?roles=' + this.user.roles.toString(), this.config)
     }
 
     deleteLanguage(id){
         return axios.delete('http://localhost:8080/api/language/' + id, this.config)
+    }
+
+    getAll(page, pageSize){
+        console.log(this.roles);
+        return axios.get(this.SERVICE_URL + '?pageNo=' + page + '&pageSize=' + pageSize + '&roles=' + this.user.roles.toString(),  this.config)
     }
 
 }

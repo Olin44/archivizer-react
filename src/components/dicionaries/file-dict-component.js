@@ -14,20 +14,17 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import UserService from "../../services/users.service";
 import {CheckSquare, CheckSquareFill, PencilFill} from "react-bootstrap-icons";
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import LanguageService from "../../services/languages.servive";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from "@material-ui/icons/Add";
+import FilesService from "../../services/files-service"
 
-function createData(id, code, name) {
-    return { id, code, name };
+function createData(id, creatorNameAndSurname, format, title) {
+    return { id, creatorNameAndSurname, format, title };
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -58,12 +55,12 @@ function stableSort(array, comparator) {
 
 const headCells = [
     { id: 'id', numeric: false, disablePadding: true, label: 'Id' },
-    { id: 'code', numeric: false, disablePadding: false, label: 'Code' },
-    { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+    { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
+    { id: 'format', numeric: false, disablePadding: false, label: 'Format' },
+    { id: 'creator', numeric: false, disablePadding: false, label: 'Creator' },
     {id: 'action', numeric: false, disablePadding: true, label: 'Create'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Update'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Delete'}
-
 ];
 
 function EnhancedTableHead(props) {
@@ -214,18 +211,18 @@ export default class EnhancedTable extends Component {
             let tempRows = [];
             for(let i = 0; i < response.length; i++)
             {
-                tempRow = createData(response[i]['id'], response[i]['code'], response[i]['name']);
+                tempRow = createData(response[i]['id'], response[i]['creatorNameAndSurname'], response[i]['format'], response[i]['title']);
                 tempRows.push(tempRow);
             }
             console.log(tempRows);
             return tempRows;
         }
-        LanguageService.getLanguages(page, rowsPerPage)
+        FilesService.getAll(page, rowsPerPage)
             .then(response => this.setState({rows: mapDataFromApiToRows(response.data)}));
     }
 
     fetchLanguagesCountFromAp(){
-        LanguageService.getLanguagesListCount()
+        FilesService.getListCount()
             .then(response => {console.log(response.data['count']); this.setState({size: response.data['count']})});
     }
 
@@ -343,9 +340,10 @@ export default class EnhancedTable extends Component {
                                                 <TableCell component="th" id={labelId} scope="row" padding="none">
                                                     {row.id}
                                                 </TableCell>
-                                                <TableCell align="left">{row.code}</TableCell>
-                                                <TableCell align="left">{row.name}</TableCell>
-                                                <TableCell align="left"> <a href={`/language/`}>
+                                                <TableCell align="left">{row.title}</TableCell>
+                                                <TableCell align="left">{row.format}</TableCell>
+                                                <TableCell align="left">{row.creatorNameAndSurname}</TableCell>
+                                                <TableCell align="left"> <a href={`/file/`}>
                                                     <AddIcon/>
                                                 </a></TableCell>
                                                 <TableCell align="left"> <a href={`/languages/${row.id}`}>

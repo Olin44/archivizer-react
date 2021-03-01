@@ -22,6 +22,8 @@ import Qualifications from "./components/dicionaries/qualifications-dict-compone
 import QualificationDetails from "./components/dicionaries/qualification-details"
 import QualificationCreate from "./components/dicionaries/qualification-create"
 import LanguageCreate from "./components/dicionaries/language.create";
+import Files from "./components/dicionaries/file-dict-component";
+import FileCreate from "./components/dicionaries/file.create";
 
 class App extends Component {
   constructor(props) {
@@ -115,6 +117,13 @@ class App extends Component {
                   </Link>
                 </li>
             )}
+            { (
+                <li className="nav-item">
+                  <Link to={"/files"} className="nav-link">
+                    Files
+                  </Link>
+                </li>
+            )}
           </div>
 
           {currentUser ? (
@@ -166,6 +175,10 @@ class App extends Component {
             <Route exact path="/swagger" component={SwaggerUI} />
             <Route exact path="/languages" component={Language} />
             <Route exact path="/qualifications" component={Qualifications} />
+            <Route exact path="/files" component={Files} />
+            <Route exact path="/file" component={FileCreate} />
+
+
 
           </Switch>
         </div>
