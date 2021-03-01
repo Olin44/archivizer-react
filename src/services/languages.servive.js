@@ -17,4 +17,8 @@ export default new class LanguageService{
         return axios.delete('http://localhost:8080/api/language/' + id, this.config)
     }
 
+    getLanguagesWithoutPagination(){
+        return axios.get(this.SERVICE_URL + "/withoutPagination")
+    }
+
 }

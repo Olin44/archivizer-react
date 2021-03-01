@@ -25,7 +25,7 @@ export default function ControllableStates(props) {
                 onInputChange={(event, newInputValue) => {
                     setInputValue(newInputValue);
                 }}
-                getOptionLabel={(option) => option.nameAndSurname}
+                getOptionLabel={props.optionLabel}
                 id="controllable-states-demo"
                 options={props.options}
                 style={{ width: 300 }}

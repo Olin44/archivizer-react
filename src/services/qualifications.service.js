@@ -30,4 +30,7 @@ export default new class QualificationsService{
         return axios.post(this.SERVICE_URL2, body)
     }
 
+    getQualificationWithoutPagination(){
+        return axios.get(this.SERVICE_URL + "/withoutPagination")
+    }
 }

@@ -33,24 +33,27 @@ export default class CustomFormFieldComponent extends Component {
 
     render() {
         return (
-            <FormControl margin='normal' fullWidth variant={'outlined'} required={this.props.required}>
-                <Grid item xs={8} >
-                    <InputLabel htmlFor={this.props.name + "-input-label"}>{this.props.label}</InputLabel>
-                    <Input id={this.props.name + "-input"}
-                           error={this.state.error}
-                           defaultValue={this.props.defaultValue}
-                           placeholder={this.props.defaultValue}
-                           onChange={event=>{this.handleChange(event)}}
-                           variant={'outlined'}
-                    />
-                    {this.state.error ? (
-                        <FormHelperText id={this.props.name + "helper-text"}
-                                        error={this.state.error} >
-                                        {this.state.errorMessage}
-                        </FormHelperText>
-                        ) : null}
-                </Grid>
-            </FormControl>
+            <div>
+                <FormControl margin='normal' fullWidth variant={'outlined'} required={this.props.required}>
+                    <Grid item xs={8} >
+                        <InputLabel htmlFor={this.props.name + "-input-label"}>{this.props.label}</InputLabel>
+                        <Input id={this.props.name + "-input"}
+                               error={this.state.error}
+                               defaultValue={this.props.defaultValue}
+                               placeholder={this.props.defaultValue}
+                               onChange={event=>{this.handleChange(event)}}
+                               variant={'outlined'}
+                               disabled = {(this.props.disabled) ? "disabled" : ""}
+                        />
+                        {this.state.error ? (
+                            <FormHelperText id={this.props.name + "helper-text"}
+                                            error={this.state.error} >
+                                            {this.state.errorMessage}
+                            </FormHelperText>
+                            ) : null}
+                    </Grid>
+                </FormControl>
+            </div>
         )
     }
 }
