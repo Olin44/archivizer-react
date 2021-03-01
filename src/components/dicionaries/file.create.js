@@ -16,17 +16,21 @@ import BooleanFormFieldComponent from "../filelds/boolean-form-field-component";
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from "@material-ui/core/TextField";
+import DropdowmenuComponent from "../filelds/dropdowmenu-component";
+import FilesService from "../../services/files-service";
+import UsersService from "../../services/users.service";
 
 export default class LanguageCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
             id: props.id,
-            loaded: true,
+            loaded: false,
             usersDetails: {
                 code: null,
                 name: null,
             },
+            users : [],
             canBeDeleted : false,
             roles: [],
             validationSchema: {
@@ -56,6 +60,31 @@ export default class LanguageCreate extends Component {
         this.setState({usersDetails : copyFoo}, function () {
             console.log(this.state.usersDetails);
         });
+    }
+
+    createData(id, nameAndSurname) {
+        return { id, nameAndSurname};
+    }
+
+    mapDataFromApiToRows(response){
+        let tempRow;
+        let tempRows = [];
+        for(let i = 0; i < response.length; i++)
+        {
+            tempRow = this.createData(response[i]['id'], response[i]['nameAndSurname'])
+            tempRows.push(tempRow);
+        }
+        console.log(this.state);
+        return tempRows;
+    }
+
+    fetchUsersWithoutPagination(){
+        UsersService.getUsersWithoutPagination()
+            .then(response => {console.log(response.data); this.setState({users: this.mapDataFromApiToRows(response.data), loaded:true})});
+    }
+
+    componentDidMount(){
+        this.fetchUsersWithoutPagination();
     }
 
     nameOnChange = (childData) => {
@@ -93,16 +122,6 @@ export default class LanguageCreate extends Component {
                                     Information about language
                                 </Typography>
                                 <Divider/>
-                                <Autocomplete
-                                    id="combo-box-demo"
-                                    options={[{ title: 'The Shawshank Redemption', year: 1994 },
-                                        { title: 'The Godfather', year: 1972 },
-                                        { title: 'The Godfather: Part II', year: 1974 },
-                                        { title: 'The Dark Knight', year: 2008 }]}
-                                    getOptionLabel={(option) => option.title}
-                                    style={{ width: 300 }}
-                                    renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
-                                />
                                 <CustomFormFieldComponent name={'code'} label={'code'}
                                                           required={false} defaultValue={''}
                                                           validationSchema = { this.state.validationSchema.code}
@@ -113,6 +132,9 @@ export default class LanguageCreate extends Component {
                                                           validationSchema = { this.state.validationSchema.name}
                                                           parentCallback = {this.nameOnChange}
                                 />
+                                <DropdowmenuComponent options = {this.state.users}
+                                                      parentCallback = {this.nameOnChange}
+                                                      label={'Creator'}/>
                             </Grid>
                         </Grid>
                         <div onClick={() => console.log('speed A')} style={this.state.floatingButtonStyle}>

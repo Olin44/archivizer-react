@@ -22,4 +22,7 @@ export default new class UserService{
         return axios.get(this.USER_SERVICE_URL + '/' + id + '/details', this.config)
     }
 
+    getUsersWithoutPagination() {
+        return axios.get ("http://localhost:8080/api/usersWithoutPagination", this.config);
+    }
 }
