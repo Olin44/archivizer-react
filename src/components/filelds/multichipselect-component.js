@@ -9,7 +9,7 @@ export default class MultichipselectComponent extends Component {
         super(props);
         this.state = {
             data : this.props.data,
-            selected : []
+            selected : [],
         };
     }
 
@@ -29,6 +29,7 @@ export default class MultichipselectComponent extends Component {
                 valueField='id'
                 textField={this.props.textField}
                 style={{ width: 300 }}
+                defaultValue={this.props.selected}
             />
             </Grid>
             </div>

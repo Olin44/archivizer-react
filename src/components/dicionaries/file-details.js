@@ -25,6 +25,8 @@ import MultiSelectionExtension from "../filelds/multiselectect-extension-compone
 import MultichipselectComponent from "../filelds/multichipselect-component";
 import RolesService from "../../services/roles.service"
 import FileService from "../../services/file-service";
+import Button from "@material-ui/core/Button";
+import { triggerBase64Download } from 'react-base64-downloader';
 
 export default class LanguageCreate extends Component {
     constructor(props) {
@@ -32,6 +34,10 @@ export default class LanguageCreate extends Component {
         this.imageOnSave = this.imageOnSave.bind(this);
         this.state = {
             id: props.id,
+            qualificationLoaded : false,
+            rolesLoaded : false,
+            languagesLoaded : false,
+            usersLoaded : false,
             loaded: false,
             usersDetails: {
                 code: null,
@@ -77,32 +83,37 @@ export default class LanguageCreate extends Component {
 
     fetchQualificationWithoutPagination(){
         QualificationService.getQualificationWithoutPagination()
-            .then(response => {console.log(response.data); this.setState({qualifications: response.data, loaded:true})});
+            .then(response => {console.log(response.data); this.setState({qualifications: response.data, qualificationLoaded:true})});
     }
 
     fetchLanguagesWithoutPagination(){
         LanguagesService.getLanguagesWithoutPagination()
-            .then(response => {console.log(response.data); this.setState({languages: response.data, loaded:true})});
+            .then(response => {console.log(response.data); this.setState({languages: response.data, languagesLoaded:true})});
     }
 
     fetchRolesFromApi(){
         RolesService.getRoles()
-            .then(response => {console.log(response.data); this.setState({roles: response.data.roles, loaded:true})});
+            .then(response => {console.log(response.data); this.setState({roles: response.data.roles, rolesLoaded:true})});
     }
 
     fetchUsersFromApi() {
         UsersService.getUsersWithoutPagination()
             .then(response => {console.log(response.data);
-            this.setState({users: response.data, loaded:true})
+                this.setState({users: response.data, usersLoaded:true})
             });
 
     }
 
     componentDidMount(){
+        this.fetchObjectFromApi();
         this.fetchQualificationWithoutPagination();
         this.fetchLanguagesWithoutPagination();
         this.fetchRolesFromApi();
         this.fetchUsersFromApi();
+    }
+
+    fetchObjectFromApi(){
+        FileService.get(this.props.id).then(response => {console.log(response.data); this.setState({fileWithMetadata : response.data, loaded: true })})
     }
 
     nameOnChange = (childData) => {
@@ -169,24 +180,25 @@ export default class LanguageCreate extends Component {
         e.preventDefault();
 
         const body = {
-                creatorId: JSON.parse(localStorage.getItem('user'))['id'],
-                format: this.state.format,
-                type: this.state.type,
-                title: this.state.title,
-                description: this.state.description,
-                file :this.state.fileAsBase64,
-                qualificationId: this.state.qualification['id'],
-                languageId: this.state.language['id'],
-                rolesWithAccessId: this.state.selectedRoles.map(a => a.id),
-                usersWithAccess: this.state.selectedUsers.map(a => a.id)
-            }
+            creatorId: JSON.parse(localStorage.getItem('user'))['id'],
+            format: this.state.format,
+            type: this.state.type,
+            title: this.state.title,
+            description: this.state.description,
+            file :this.state.fileAsBase64,
+            qualificationId: this.state.qualification['id'],
+            languageId: this.state.language['id'],
+            rolesWithAccessId: this.state.selectedRoles.map(a => a.id),
+            usersWithAccess: this.state.selectedUsers.map(a => a.id)
+        }
         // const formData = new FormData();
         // formData.append('file', this.state.file);
         // formData.append('format', this.state.format);
         // formData.append('qualificationId', this.state.qualification['id']);
         // formData.append('rolesWithAccessId', JSON.stringify(this.state.selectedRoles.map(a => a.id)));
         // formData.append('usersWithAccess', JSON.stringify(this.state.selectedUsers.map(a => a.id)));
-        // formData.append('title', this.state.title);yarn
+        // formData.append('title', this.state.title);
+        // formData.append('type', this.state.type);
         // formData.append('languageId', this.state.language['id']);
         // formData.append('creatorId', JSON.parse(localStorage.getItem('user'))['id']);
         // formData.append('description', this.state.description);
@@ -199,64 +211,81 @@ export default class LanguageCreate extends Component {
             }});
     }
 
+
+    downloadFile = (file) =>{
+        const type = this.state.fileWithMetadata.type;
+        const title = this.state.fileWithMetadata.title;
+        const linkSource ="data:" + type + ";base64," + file;
+        const downloadLink = document.createElement("a");
+        downloadLink.href = linkSource;
+        downloadLink.download = title;
+        downloadLink.click();
+    }
+
     render() {
         return (
             <div>
-                {this.state.loaded ? (
+                {this.state.loaded && this.state.users != null? (
                     <div style={{ minHeight: '90vh'}}>
                         <BreadcrumbsComponent subSites={this.state.subSites}
                                               actualSiteName={"Create file"}
                                               actualSiteIcon={<HomeIcon/>}/>
                         <Grid alignItems={'center'} container direction="column" style={{ backgroundColor: '#f2f2f2' }}>
                             <Grid item xs={12} alignItems={'center'} >
-                                {this.state.fileAsBase64 === '' ? (<div>
-                                        <Typography variant="subtitle1" gutterBottom style={{ color:'#266eb6'}}>
-                                            Add file
-                                        </Typography>
-                                <DropzoneDialogExample parentCallback = {this.imageOnSave} buttonText = {"Add file"}/></div>) : null}
+                                {   this.state.qualificationLoaded === true &&
+                                this.state.rolesLoaded === true
+                                && this.state.languagesLoaded === true &&
+                                    this.state.usersLoaded === true && this.state.loaded === true ? (<div>
+                                    <Button variant="contained" color="primary" onClick={() => this.downloadFile(this.state.fileWithMetadata.file)}>
+                                        Download file </Button>
+                                    <Typography variant="subtitle1" gutterBottom style={{ color:'#266eb6'}}>
+                                        Change file
+                                    </Typography>
+                                    <DropzoneDialogExample parentCallback = {this.imageOnSave} buttonText = {"Change file"}/></div>) : null}
                                 <Divider/>
-                                {this.state.fileAsBase64 !== '' ? (
                                     <div>
                                         <CustomFormFieldComponent name={'title'} label={'Title'}
-                                                                  required={true} defaultValue={this.state.title}
+                                                                  required={true} defaultValue={this.state.fileWithMetadata['title']}
                                                                   validationSchema = { this.state.validationSchema.title}
                                                                   parentCallback = {this.nameOnChange}
                                         />
-                                <CustomFormFieldComponent name={'format'} label={'Format'}
-                                                          required={false} defaultValue={this.state.format}
-                                                          validationSchema = { this.state.validationSchema.format}
-                                                          parentCallback = {this.formatOnChange}
-                                                          disabled = 'disabled'
-                                />
-                                    <CustomFormFieldComponent name={'type'} label={'Type'}
-                                                              required={true} defaultValue={this.state.type}
-                                                              validationSchema = { this.state.validationSchema.type}
-                                                              parentCallback = {this.typeOnChange}
-                                                              disabled = 'disabled'
-                                    />
+                                        <CustomFormFieldComponent name={'format'} label={'Format'}
+                                                                  required={false} defaultValue={this.state.fileWithMetadata.format}
+                                                                  validationSchema = { this.state.validationSchema.format}
+                                                                  parentCallback = {this.formatOnChange}
+                                                                  disabled = 'disabled'
+                                        />
+                                        <CustomFormFieldComponent name={'type'} label={'Type'}
+                                                                  required={true} defaultValue={this.state.fileWithMetadata.type}
+                                                                  validationSchema = { this.state.validationSchema.type}
+                                                                  parentCallback = {this.typeOnChange}
+                                                                  disabled = 'disabled'
+                                        />
                                         <CustomFormFieldComponent name={'description'} label={'Description'}
-                                                                  required={true} defaultValue={""}
+                                                                  required={true} defaultValue={this.state.fileWithMetadata.description}
                                                                   validationSchema = { this.state.validationSchema.description}
                                                                   parentCallback = {this.descriptionOnChange}
 
                                         />
-                                <DropdowmenuComponent options = {this.state.qualifications}
-                                                      parentCallback = {this.qualificationOnChange}
-                                                      label={'Qualification'}
-                                                      optionLabel = {(option) => option.type}/>
-                                <DropdowmenuComponent options = {this.state.languages}
-                                                      parentCallback = {this.languageOnChange}
-                                                      label={'Language'}
-                                                      optionLabel = {(option) => option.name}/>
-                                <MultichipselectComponent parentCallback = {this.rolesOnChange}
-                                                    data = {this.state.roles}
-                                                    textField = 'name'
-                                                    label = 'Select roles'/>
+                                        <DropdowmenuComponent options = {this.state.qualifications}
+                                                              parentCallback = {this.qualificationOnChange}
+                                                              label={'Qualification'}
+                                                              optionLabel = {(option) => option.type}/>
+                                        <DropdowmenuComponent options = {this.state.languages}
+                                                              parentCallback = {this.languageOnChange}
+                                                              label={'Language'}
+                                                              optionLabel = {(option) => option.name}/>
+                                        <MultichipselectComponent parentCallback = {this.rolesOnChange}
+                                                                  selected = {this.state.fileWithMetadata.rolesWithAccess.roles}
+                                                                  data = {this.state.roles}
+                                                                  textField = 'name'
+                                                                  label = 'Select roles'/>
                                         <MultichipselectComponent parentCallback = {this.usersOnChange}
+                                                                  selected = {this.state.fileWithMetadata.usersWithAccess}
                                                                   data = {this.state.users}
                                                                   textField = 'nameAndSurname'
                                                                   label = 'Select users'/>
-                                    </div>) : null }
+                                    </div>
                             </Grid>
                         </Grid>
                         <div onClick={() => console.log('speed A')} style={this.state.floatingButtonStyle}>
@@ -266,7 +295,7 @@ export default class LanguageCreate extends Component {
                         </div>
 
                     </div>
-                ) : null}
+                ) : <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}><img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" /></div>}
             </div>
         );
     }

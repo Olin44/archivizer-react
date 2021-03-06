@@ -22,6 +22,7 @@ import LanguageService from "../../services/languages.servive";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from "@material-ui/icons/Add";
 import FilesService from "../../services/files-service"
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 
 function createData(id, creatorNameAndSurname, format, title) {
     return { id, creatorNameAndSurname, format, title };
@@ -58,6 +59,7 @@ const headCells = [
     { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
     { id: 'format', numeric: false, disablePadding: false, label: 'Format' },
     { id: 'creator', numeric: false, disablePadding: false, label: 'Creator' },
+    {id: 'action', numeric: false, disablePadding: true, label: 'Detail info'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Create'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Update'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Delete'}
@@ -343,6 +345,9 @@ export default class EnhancedTable extends Component {
                                                 <TableCell align="left">{row.title}</TableCell>
                                                 <TableCell align="left">{row.format}</TableCell>
                                                 <TableCell align="left">{row.creatorNameAndSurname}</TableCell>
+                                                <TableCell align="left"> <a href={`/file/${row.id}`}>
+                                                    <FindInPageIcon />
+                                                </a></TableCell>
                                                 <TableCell align="left"> <a href={`/file/`}>
                                                     <AddIcon/>
                                                 </a></TableCell>

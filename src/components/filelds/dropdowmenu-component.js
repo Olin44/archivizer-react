@@ -26,7 +26,7 @@ export default function ControllableStates(props) {
                     setInputValue(newInputValue);
                 }}
                 getOptionLabel={props.optionLabel}
-                id="controllable-states-demo"
+                ref={props.ref}
                 options={props.options}
                 style={{ width: 300 }}
                 renderInput={(params) => <TextField {...params} label={props.label} variant="outlined" />}

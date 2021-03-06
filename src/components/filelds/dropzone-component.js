@@ -7,7 +7,7 @@ export default class DropzoneDialogExample extends Component {
         super(props);
         this.state = {
             open: false,
-            files: []
+            files: props.file != null ? props.file : []
         };
     }
 
@@ -36,7 +36,7 @@ export default class DropzoneDialogExample extends Component {
         return (
             <div>
                 <Button variant="contained" color="primary" onClick={this.handleOpen.bind(this)}>
-                    Add file
+                    {this.props.buttonText}
                 </Button>
                 <DropzoneDialog
                     open={this.state.open}

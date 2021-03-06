@@ -24,6 +24,7 @@ import QualificationCreate from "./components/dicionaries/qualification-create"
 import LanguageCreate from "./components/dicionaries/language.create";
 import Files from "./components/dicionaries/file-dict-component";
 import FileCreate from "./components/dicionaries/file.create";
+import FileDetails from "./components/dicionaries/file-details"
 
 class App extends Component {
   constructor(props) {
@@ -177,6 +178,8 @@ class App extends Component {
             <Route exact path="/qualifications" component={Qualifications} />
             <Route exact path="/files" component={Files} />
             <Route exact path="/file" component={FileCreate} />
+            <Route exact path="/file/:id" component={(routerProps) => <FileDetails id={routerProps.match.params.id}/>}/>
+
 
 
 
