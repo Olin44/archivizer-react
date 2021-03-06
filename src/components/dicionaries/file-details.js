@@ -46,7 +46,7 @@ export default class LanguageCreate extends Component {
             qualifications : [],
             languages : [],
             roles : [],
-            selectedRoles : [],
+            rolesWithAccess : [],
             canBeDeleted : false,
             validationSchema: {
                 format: yup.string().required(),
@@ -113,7 +113,18 @@ export default class LanguageCreate extends Component {
     }
 
     fetchObjectFromApi(){
-        FileService.get(this.props.id).then(response => {console.log(response.data); this.setState({fileWithMetadata : response.data, loaded: true })})
+        FileService.get(this.props.id).then(response => {console.log(response.data); this.setState(
+            {
+                format : response.data.format,
+                type : response.data.type,
+                title : response.data.title,
+                description : response.data.description,
+                fileAsBase64 : response.data.file,
+                qualification : response.data.qualification,
+                language : response.data.language,
+                rolesWithAccess : response.data.rolesWithAccess.roles,
+                selectedUsers : response.data.usersWithAccess,
+                loaded: true })})
     }
 
     nameOnChange = (childData) => {
@@ -136,7 +147,7 @@ export default class LanguageCreate extends Component {
     }
 
     rolesOnChange = (childData) => {
-        this.setState({selectedRoles : childData}, function () {
+        this.setState({rolesWithAccess : childData}, function () {
             console.log(this.state);
         });
     }
@@ -166,14 +177,34 @@ export default class LanguageCreate extends Component {
     }
 
     imageOnSave = (childData) => {
+        this.setState({loaded : false} );
         const reader = new FileReader();
-        this.state.file =  childData;
-        this.state.format = childData.name.split('.')[1];
-        this.state.type = childData.type;
-        this.state.title = childData.name.split('.')[0];
-        console.log(this.state);
+        let fileAsBase64 = null;
         reader.readAsDataURL(childData);
-        reader.onload = () => this.setState({fileAsBase64 : reader.result.split(';base64,')[1]});
+        reader.onload = () => {
+            fileAsBase64 = reader.result.split(';base64,')[1];
+            const body = {
+                creatorId: JSON.parse(localStorage.getItem('user'))['id'],
+                format: childData.name.split('.')[1],
+                type: childData.type,
+                title: childData.name.split('.')[0],
+                description: this.state.description,
+                file: fileAsBase64,
+                qualificationId: this.state.qualification['id'],
+                languageId: this.state.language['id'],
+                rolesWithAccessId: this.state.rolesWithAccess.map(a => a.id),
+                usersWithAccess: this.state.selectedUsers.map(a => a.id)
+            }
+            FileService
+                .update(this.props.id, body)
+                .then(window.location.reload(true))
+                .catch(error => {
+                    if (error.response) {
+                        alert(error.response.data);
+                        console.log(error.response.data);// => the response payload
+                    }
+                });
+        }
     }
 
     handleUpdateClick(e) {
@@ -185,25 +216,14 @@ export default class LanguageCreate extends Component {
             type: this.state.type,
             title: this.state.title,
             description: this.state.description,
-            file :this.state.fileAsBase64,
+            file : this.state.fileAsBase64,
             qualificationId: this.state.qualification['id'],
             languageId: this.state.language['id'],
-            rolesWithAccessId: this.state.selectedRoles.map(a => a.id),
+            rolesWithAccessId: this.state.rolesWithAccess.map(a => a.id),
             usersWithAccess: this.state.selectedUsers.map(a => a.id)
         }
-        // const formData = new FormData();
-        // formData.append('file', this.state.file);
-        // formData.append('format', this.state.format);
-        // formData.append('qualificationId', this.state.qualification['id']);
-        // formData.append('rolesWithAccessId', JSON.stringify(this.state.selectedRoles.map(a => a.id)));
-        // formData.append('usersWithAccess', JSON.stringify(this.state.selectedUsers.map(a => a.id)));
-        // formData.append('title', this.state.title);
-        // formData.append('type', this.state.type);
-        // formData.append('languageId', this.state.language['id']);
-        // formData.append('creatorId', JSON.parse(localStorage.getItem('user'))['id']);
-        // formData.append('description', this.state.description);
         FileService
-            .create(body)
+            .update(this.props.id, body)
             .then(r => alert('File created!'))
             .catch(error => {if( error.response ){
                 alert(error.response.data);
@@ -213,8 +233,8 @@ export default class LanguageCreate extends Component {
 
 
     downloadFile = (file) =>{
-        const type = this.state.fileWithMetadata.type;
-        const title = this.state.fileWithMetadata.title;
+        const type = this.state.type;
+        const title = this.state.title;
         const linkSource ="data:" + type + ";base64," + file;
         const downloadLink = document.createElement("a");
         downloadLink.href = linkSource;
@@ -236,7 +256,7 @@ export default class LanguageCreate extends Component {
                                 this.state.rolesLoaded === true
                                 && this.state.languagesLoaded === true &&
                                     this.state.usersLoaded === true && this.state.loaded === true ? (<div>
-                                    <Button variant="contained" color="primary" onClick={() => this.downloadFile(this.state.fileWithMetadata.file)}>
+                                    <Button variant="contained" color="primary" onClick={() => this.downloadFile(this.state.fileAsBase64)}>
                                         Download file </Button>
                                     <Typography variant="subtitle1" gutterBottom style={{ color:'#266eb6'}}>
                                         Change file
@@ -245,24 +265,24 @@ export default class LanguageCreate extends Component {
                                 <Divider/>
                                     <div>
                                         <CustomFormFieldComponent name={'title'} label={'Title'}
-                                                                  required={true} defaultValue={this.state.fileWithMetadata['title']}
+                                                                  required={true} defaultValue={this.state['title']}
                                                                   validationSchema = { this.state.validationSchema.title}
                                                                   parentCallback = {this.nameOnChange}
                                         />
                                         <CustomFormFieldComponent name={'format'} label={'Format'}
-                                                                  required={false} defaultValue={this.state.fileWithMetadata.format}
+                                                                  required={false} defaultValue={this.state.format}
                                                                   validationSchema = { this.state.validationSchema.format}
                                                                   parentCallback = {this.formatOnChange}
                                                                   disabled = 'disabled'
                                         />
                                         <CustomFormFieldComponent name={'type'} label={'Type'}
-                                                                  required={true} defaultValue={this.state.fileWithMetadata.type}
+                                                                  required={true} defaultValue={this.state.type}
                                                                   validationSchema = { this.state.validationSchema.type}
                                                                   parentCallback = {this.typeOnChange}
                                                                   disabled = 'disabled'
                                         />
                                         <CustomFormFieldComponent name={'description'} label={'Description'}
-                                                                  required={true} defaultValue={this.state.fileWithMetadata.description}
+                                                                  required={true} defaultValue={this.state.description}
                                                                   validationSchema = { this.state.validationSchema.description}
                                                                   parentCallback = {this.descriptionOnChange}
 
@@ -276,12 +296,12 @@ export default class LanguageCreate extends Component {
                                                               label={'Language'}
                                                               optionLabel = {(option) => option.name}/>
                                         <MultichipselectComponent parentCallback = {this.rolesOnChange}
-                                                                  selected = {this.state.fileWithMetadata.rolesWithAccess.roles}
+                                                                  selected = {this.state.rolesWithAccess}
                                                                   data = {this.state.roles}
                                                                   textField = 'name'
                                                                   label = 'Select roles'/>
                                         <MultichipselectComponent parentCallback = {this.usersOnChange}
-                                                                  selected = {this.state.fileWithMetadata.usersWithAccess}
+                                                                  selected = {this.state.selectedUsers}
                                                                   data = {this.state.users}
                                                                   textField = 'nameAndSurname'
                                                                   label = 'Select users'/>
