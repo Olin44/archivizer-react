@@ -25,6 +25,8 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import LanguageService from "../../services/languages.servive";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from "@material-ui/icons/Add";
+import AuthService from "../../services/auth.service";
+import PageNotFound from "../PageNotFound";
 
 function createData(id, code, name) {
     return { id, code, name };
@@ -60,11 +62,19 @@ const headCells = [
     { id: 'id', numeric: false, disablePadding: true, label: 'Id' },
     { id: 'code', numeric: false, disablePadding: false, label: 'Code' },
     { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-    {id: 'action', numeric: false, disablePadding: true, label: 'Create'},
-    {id: 'action', numeric: false, disablePadding: true, label: 'Update'},
-    {id: 'action', numeric: false, disablePadding: true, label: 'Delete'}
-
 ];
+
+function getHeadCells(){
+    console.log(AuthService.getCurrentUser().roles);
+    if(!AuthService.getCurrentUser().roles.includes("ROLE_ADMIN")){
+        return headCells;
+    } else {
+        return headCells.slice().concat(
+        [{id: 'action', numeric: false, disablePadding: true, label: 'Create'},
+        {id: 'action', numeric: false, disablePadding: true, label: 'Update'},
+        {id: 'action', numeric: false, disablePadding: true, label: 'Delete'}]);
+    }
+}
 
 function EnhancedTableHead(props) {
     const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -83,7 +93,7 @@ function EnhancedTableHead(props) {
                         inputProps={{ 'aria-label': 'select all desserts' }}
                     />
                 </TableCell>
-                {headCells.map((headCell) => (
+                {getHeadCells().map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.numeric ? 'right' : 'left'}
@@ -112,6 +122,7 @@ EnhancedTableHead.propTypes = {
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
+    showAdminContent: PropTypes.bool,
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -297,7 +308,8 @@ export default class EnhancedTable extends Component {
     isSelected = (name) => this.state.selected.indexOf(name) !== -1;
     render() {
         return (
-            <div className={this.state.classes.root}>
+            <div>{AuthService.getCurrentUser() ?
+                <div className={this.state.classes.root}>
                 <Paper className={this.state.classes.paper}>
                     <EnhancedTableToolbar
                         numSelected = {this.state.selected.length}
@@ -317,6 +329,7 @@ export default class EnhancedTable extends Component {
                                 onSelectAllClick={this.handleSelectAllClick}
                                 onRequestSort={this.handleRequestSort}
                                 rowCount={this.state.rows.length}
+                                showAdminContent = {this.props.showAdminContent}
                             />
                             <TableBody>
                                 {stableSort(this.state.rows, getComparator(this.state.order, this.state.orderBy))
@@ -345,15 +358,18 @@ export default class EnhancedTable extends Component {
                                                 </TableCell>
                                                 <TableCell align="left">{row.code}</TableCell>
                                                 <TableCell align="left">{row.name}</TableCell>
+                                                { AuthService.getCurrentUser().roles.includes("ROLE_ADMIN") ?
                                                 <TableCell align="left"> <a href={`/language/`}>
                                                     <AddIcon/>
-                                                </a></TableCell>
+                                                </a></TableCell> : null}
+                                                { AuthService.getCurrentUser().roles.includes("ROLE_ADMIN") ?
                                                 <TableCell align="left"> <a href={`/languages/${row.id}`}>
                                                     <PencilFill/>
-                                                </a></TableCell>
+                                                </a></TableCell> : null}
+                                                    { AuthService.getCurrentUser().roles.includes("ROLE_ADMIN") ?
                                                 <TableCell>
                                                     <DeleteIcon onClick={(e) =>this.handleDelete(e, row.id)}/>
-                                                </TableCell>
+                                                </TableCell> : null}
                                             </TableRow>
                                         );
                                     })}
@@ -374,6 +390,8 @@ export default class EnhancedTable extends Component {
                     control={<Switch checked={this.state.dense} onChange={this.handleChangeDense}/>}
                     label="Dense padding"
                 />
+            </div>
+                : <PageNotFound/>}
             </div>
         );
     }

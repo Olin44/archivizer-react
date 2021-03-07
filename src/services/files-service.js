@@ -12,7 +12,7 @@ export default new class FilesService{
     }
 
     deleteLanguage(id){
-        return axios.delete('http://localhost:8080/api/language/' + id, this.config)
+        return axios.delete('http://localhost:8080/api/file/' + id, this.config)
     }
 
     getAll(page, pageSize){

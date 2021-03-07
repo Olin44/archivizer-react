@@ -25,6 +25,7 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import QualificationsService from "../../services/qualifications.service";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
+import AuthService from "../../services/auth.service";
 
 function createData(id, type, description, archivizeAfter, canBeDeleted) {
     console.log(id, type, description, archivizeAfter, canBeDeleted)
@@ -70,11 +71,19 @@ const headCells = [
     { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
     { id: 'archivizeAfter', numeric: false, disablePadding: false, label: 'Archivize after' },
     { id: 'canBeDeleted', numeric: false, disablePadding: false, label: 'Can by deleted'},
-    {id: 'action_create', numeric: false, disablePadding: true, label: 'Create'},
-    {id: 'action_update', numeric: false, disablePadding: true, label: 'Update'},
-    {id: 'action_delete', numeric: false, disablePadding: true, label: 'Delete'}
-
 ];
+
+function getHeadCells(){
+    console.log(AuthService.getCurrentUser().roles);
+    if(!AuthService.getCurrentUser().roles.includes("ROLE_ADMIN")){
+        return headCells;
+    } else {
+        return headCells.slice().concat(
+            [    {id: 'action_create', numeric: false, disablePadding: true, label: 'Create'},
+                {id: 'action_update', numeric: false, disablePadding: true, label: 'Update'},
+                {id: 'action_delete', numeric: false, disablePadding: true, label: 'Delete'}]);
+    }
+}
 
 function EnhancedTableHead(props) {
     const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -93,7 +102,7 @@ function EnhancedTableHead(props) {
                         inputProps={{ 'aria-label': 'select all desserts' }}
                     />
                 </TableCell>
-                {headCells.map((headCell) => (
+                {getHeadCells().map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.numeric ? 'right' : 'left'}
@@ -351,15 +360,18 @@ export default class EnhancedTable extends Component {
                                                 <TableCell align="left">{row.description}</TableCell>
                                                 <TableCell align="left">{row.archivizeAfterAsString}</TableCell>
                                                 <TableCell align="left">{this.formatYesNo(row.canBeDeleted)}</TableCell>
-                                                <TableCell align="left"> <a href={`/qualification/`}>
+                                                { AuthService.getCurrentUser().roles.includes("ROLE_ADMIN") ?
+                                                    <TableCell align="left"> <a href={`/qualification/`}>
                                                     <AddIcon/>
-                                                </a></TableCell>
-                                                <TableCell align="left"> <a href={`/qualification/${row.id}`}>
+                                                </a></TableCell> : null}
+                                                { AuthService.getCurrentUser().roles.includes("ROLE_ADMIN") ?
+                                                    <TableCell align="left"> <a href={`/qualification/${row.id}`}>
                                                     <PencilFill/>
-                                                </a></TableCell>
-                                                <TableCell>
+                                                </a></TableCell> : null}
+                                                { AuthService.getCurrentUser().roles.includes("ROLE_ADMIN") ?
+                                                    <TableCell>
                                                     <DeleteIcon onClick={(e) =>this.handleDelete(e, row.id)}/>
-                                                </TableCell>
+                                                </TableCell> : null}
                                             </TableRow>
                                         );
                                     })}

@@ -25,6 +25,7 @@ import LanguageCreate from "./components/dicionaries/language.create";
 import Files from "./components/dicionaries/file-dict-component";
 import FileCreate from "./components/dicionaries/file.create";
 import FileDetails from "./components/dicionaries/file-details"
+import PageNotFound from "./components/PageNotFound";
 
 class App extends Component {
   constructor(props) {
@@ -32,10 +33,10 @@ class App extends Component {
     this.logOut = this.logOut.bind(this);
 
     this.state = {
-      showModeratorBoard: false,
-      showAdminBoard: false,
+      showModeratorContent: false,
+      showAdminContent: false,
       currentUser: undefined,
-      showUserBoard: false
+      showUserContent: false
     };
   }
 
@@ -45,9 +46,9 @@ class App extends Component {
     if (user) {
       this.setState({
         currentUser: user,
-        showUserBoard: user.roles.includes("ROLE_USER"),
-        showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
-        showAdminBoard: user.roles.includes("ROLE_ADMIN"),
+        showUserContent: user.roles.includes("ROLE_USER"),
+        showModeratorContent: user.roles.includes("ROLE_MODERATOR"),
+        showAdminContent: user.roles.includes("ROLE_ADMIN"),
       });
     }
   }
@@ -57,7 +58,7 @@ class App extends Component {
   }
 
   render() {
-    const { currentUser, showModeratorBoard, showAdminBoard, showUserBoard} = this.state;
+    const { currentUser, showModeratorContent, showAdminContent, showUserContent} = this.state;
 
     return (
       <div>
@@ -67,14 +68,7 @@ class App extends Component {
             Archivizer
           </Link>
           <div className="navbar-nav mr-auto">
-            {showModeratorBoard && (
-              <li className="nav-item">
-                <Link to={"/mod"} className="nav-link">
-                  Moderator Board
-                </Link>
-              </li>
-            )}
-            { (
+            { showAdminContent && (
                 <li className="nav-item">
                   <Link to={"/users"} className="nav-link">
                     Users
@@ -82,27 +76,12 @@ class App extends Component {
                 </li>
             )}
 
-            { (
+            { showAdminContent && (
                 <li className="nav-item">
                   <Link to={"/swagger"} className="nav-link">
                     Swagger
                   </Link>
                 </li>
-            )}
-            {showAdminBoard && (
-              <li className="nav-item">
-                <Link to={"/admin"} className="nav-link">
-                  Admin Board
-                </Link>
-              </li>
-            )}
-
-            {showUserBoard && (
-              <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User
-                </Link>
-              </li>
             )}
             { (
                 <li className="nav-item">
@@ -163,26 +142,30 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/profile" component={Profile} />
-            <Route path="/user" component={BoardUser} />
-            <Route path="/mod" component={BoardModerator} />
-            <Route path="/admin" component={BoardAdmin} />
             <Route path="/newUser" component={NewUser} />
-            <Route exact path="/users/:id" component={(routerProps) => <UserDetail id={routerProps.match.params.id}/>}/>
-            <Route exact path="/languages/:id" component={(routerProps) => <LanguageDetails id={routerProps.match.params.id}/>}/>
+            <Route exact path="/users/:id" component={(routerProps) => <UserDetail id={routerProps.match.params.id}
+                                                                                   showUserContent = {this.state.showUserContent}
+                                                                                   showModeratorContent = {this.state.showModeratorContent}
+                                                                                   showAdminContent = {this.state.showAdminContent}
+                                                                      />}/>
+            <Route exact path="/languages/:id" component={(routerProps) => <LanguageDetails id={routerProps.match.params.id}
+                                                                                            showUserContent = {this.state.showUserContent}
+                                                                                            showModeratorContent = {this.state.showModeratorContent}
+                                                                                            showAdminContent = {this.state.showAdminContent}/>}/>
             <Route exact path="/qualification/:id" component={(routerProps) => <QualificationDetails id={routerProps.match.params.id}/>}/>
             <Route exact path="/qualification/" component={QualificationCreate}/>
             <Route exact path="/language/" component={LanguageCreate}/>
             <Route exact path="/users" component={EnhancedTable} />
             <Route exact path="/swagger" component={SwaggerUI} />
-            <Route exact path="/languages" component={Language} />
+            <Route exact path="/languages" component={() =><Language
+                   showUserContent = {this.state.showUserContent}
+                   showModeratorContent = {this.state.showModeratorContent}
+                   showAdminContent = {this.state.showAdminContent}/> }/>
             <Route exact path="/qualifications" component={Qualifications} />
             <Route exact path="/files" component={Files} />
             <Route exact path="/file" component={FileCreate} />
             <Route exact path="/file/:id" component={(routerProps) => <FileDetails id={routerProps.match.params.id}/>}/>
-
-
-
-
+            <Route component={PageNotFound}/>
           </Switch>
         </div>
       </div>

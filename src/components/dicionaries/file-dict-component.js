@@ -23,6 +23,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from "@material-ui/icons/Add";
 import FilesService from "../../services/files-service"
 import FindInPageIcon from '@material-ui/icons/FindInPage';
+import Fab from "@material-ui/core/Fab";
+import EditIcon from "@material-ui/icons/Edit";
 
 function createData(id, creatorNameAndSurname, format, title) {
     return { id, creatorNameAndSurname, format, title };
@@ -204,7 +206,15 @@ export default class EnhancedTable extends Component {
             dense:false,
             rowsPerPage: 5,
             classes: useStyles,
-            size: 0};
+            size: 0,
+        floatingButtonStyle : {
+            margin: 0,
+                top: 'auto',
+                right: 20,
+                bottom: 20,
+                left: 'auto',
+                position: 'fixed',
+        }}
     }
 
     fetchDataFromApi(page, rowsPerPage){
@@ -223,13 +233,13 @@ export default class EnhancedTable extends Component {
             .then(response => this.setState({rows: mapDataFromApiToRows(response.data)}));
     }
 
-    fetchLanguagesCountFromAp(){
+    fetchCountFromAp(){
         FilesService.getListCount()
             .then(response => {console.log(response.data['count']); this.setState({size: response.data['count']})});
     }
 
     componentDidMount(){
-        this.fetchLanguagesCountFromAp();
+        this.fetchCountFromAp();
         this.fetchDataFromApi(this.state.page, this.state.rowsPerPage);
     }
 
@@ -290,7 +300,12 @@ export default class EnhancedTable extends Component {
 
     formatYesNo(isActive){
         return isActive ? <CheckSquareFill/> : <CheckSquare/>;
+    }
 
+    createButtonAction(){
+        const downloadLink = document.createElement("a");
+        downloadLink.href = `/file/`
+        downloadLink.click();
     }
 
     isSelected = (name) => this.state.selected.indexOf(name) !== -1;
@@ -377,6 +392,11 @@ export default class EnhancedTable extends Component {
                     control={<Switch checked={this.state.dense} onChange={this.handleChangeDense}/>}
                     label="Dense padding"
                 />
+                <div onClick={() => console.log('speed A')} style={this.state.floatingButtonStyle}>
+                    <Fab color="secondary" aria-label="Create" style={this.state.floatingButtonStyle} onClick={this.createButtonAction.bind(this)}>
+                        <AddIcon />
+                    </Fab>
+                </div>
             </div>
         );
     }
