@@ -11,7 +11,6 @@ import BreadcrumbsComponent from "../utils/breadcrumbs-component";
 import HomeIcon from '@material-ui/icons/Home';
 import LanguageService from "../../services/language.service";
 import LanguageIcon from '@material-ui/icons/Language';
-import UserService from "../../services/user.service";
 
 export default class UsersDetailsComponent extends Component {
     constructor(props) {

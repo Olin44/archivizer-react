@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import PropTypes, {object} from 'prop-types';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -22,8 +22,6 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import UsersService from "../../services/users.service";
 import {CheckSquare, CheckSquareFill, PencilFill} from "react-bootstrap-icons";
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import axios from "axios";
-import LanguageService from "../../services/languages.servive";
 
 function createData(id, login, email, isActive) {
     return { id, login, email, isActive };

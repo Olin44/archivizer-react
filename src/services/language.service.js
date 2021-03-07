@@ -1,6 +1,5 @@
 import axios from 'axios';
 import authHeader from './auth-header';
-import authHeader2 from './auth-header2';
 
 var headers = {
     'Content-Type': 'application/json'

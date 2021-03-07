@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 const NotFound = () => (
     <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>

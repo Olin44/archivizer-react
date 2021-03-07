@@ -2,7 +2,6 @@ import {Multiselect} from 'react-widgets'
 import React, {Component} from "react";
 import "react-widgets/dist/css/react-widgets.css";
 import Grid from "@material-ui/core/Grid";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export default class MultichipselectComponent extends Component {
     constructor(props) {

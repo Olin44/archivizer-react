@@ -1,7 +1,5 @@
-import React, { Component } from "react";
-import { render } from "react-dom";
-import { FormControl, FormGroup, FormLabel } from "@material-ui/core";
-import {withStyles} from "@material-ui/core/styles";
+import React from "react";
+import {FormControl, FormGroup, FormLabel} from "@material-ui/core";
 import MultiChipSelect from "./multichipselect-component";
 
 class MultiSelectionExtension extends React.Component {

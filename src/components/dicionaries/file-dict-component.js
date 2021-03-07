@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import PropTypes, {object} from 'prop-types';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {lighten, makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -24,7 +24,6 @@ import AddIcon from "@material-ui/icons/Add";
 import FilesService from "../../services/files-service"
 import FindInPageIcon from '@material-ui/icons/FindInPage';
 import Fab from "@material-ui/core/Fab";
-import EditIcon from "@material-ui/icons/Edit";
 
 function createData(id, creatorNameAndSurname, format, title) {
     return { id, creatorNameAndSurname, format, title };

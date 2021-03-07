@@ -4,7 +4,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import React, {Component} from "react";
-import * as yup from "yup";
 
 export default class CustomFormFieldComponent extends Component {
     constructor(props) {
