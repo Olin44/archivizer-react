@@ -21,6 +21,7 @@ import QualificationsService from "../../services/qualifications.service";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import AuthService from "../../services/auth.service";
+import Fab from "@material-ui/core/Fab";
 
 function createData(id, type, description, archivizeAfter, canBeDeleted) {
     console.log(id, type, description, archivizeAfter, canBeDeleted)
@@ -164,7 +165,7 @@ const EnhancedTableToolbar = (props) => {
                 </Typography>
             ) : (
                 <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                    Languages
+                    Qualifications
                 </Typography>
             )}
         </Toolbar>
@@ -212,7 +213,16 @@ export default class EnhancedTable extends Component {
             dense:false,
             rowsPerPage: 5,
             classes: useStyles,
-            size: 0};
+            size: 0,
+            floatingButtonStyle : {
+            margin: 0,
+                top: 'auto',
+                right: 20,
+                bottom: 20,
+                left: 'auto',
+                position: 'fixed',
+        }
+        }
     }
 
     fetchDataFromApi(page, rowsPerPage){
@@ -387,8 +397,20 @@ export default class EnhancedTable extends Component {
                     control={<Switch checked={this.state.dense} onChange={this.handleChangeDense}/>}
                     label="Dense padding"
                 />
+                <div onClick={() => console.log('speed A')} style={this.state.floatingButtonStyle}>
+                    <Fab color="secondary" aria-label="Create" style={this.state.floatingButtonStyle} onClick={this.createButtonAction.bind(this)}>
+                        <AddIcon />
+                    </Fab>
+                </div>
             </div>
+
         );
+    }
+
+    createButtonAction(){
+        const downloadLink = document.createElement("a");
+        downloadLink.href = `/qualification/`
+        downloadLink.click();
     }
 
     handleDelete = (e, id) => {
@@ -396,7 +418,7 @@ export default class EnhancedTable extends Component {
         e.preventDefault();
         QualificationsService
             .deleteById(id)
-            .then(r => alert('Language deleted!'))
+            .then(r => alert('Qualification deleted!'))
             .catch(error => {if( error.response ){
                 let violationsString = ''
                 console.log(error.response.data['violations'].length);

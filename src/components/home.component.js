@@ -33,7 +33,8 @@ export default class Home extends Component {
     return (
         <main role="main" className="text-center col-xs-12">
             <h1 className="cover-heading">Archivizer</h1>
-            <p className="lead">Data archiving system for small and medium-sized companies.
+            <p className="lead">
+            <h2>Data archiving system for small and medium-sized companies.</h2>
             </p>
         </main>
     );

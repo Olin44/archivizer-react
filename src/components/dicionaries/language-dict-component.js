@@ -23,6 +23,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from "@material-ui/icons/Add";
 import AuthService from "../../services/auth.service";
 import PageNotFound from "../PageNotFound";
+import Fab from "@material-ui/core/Fab";
 
 function createData(id, code, name) {
     return { id, code, name };
@@ -212,7 +213,15 @@ export default class EnhancedTable extends Component {
             dense:false,
             rowsPerPage: 5,
             classes: useStyles,
-            size: 0};
+            size: 0,
+            floatingButtonStyle : {
+                margin: 0,
+                top: 'auto',
+                right: 20,
+                bottom: 20,
+                left: 'auto',
+                position: 'fixed',
+            }};
     }
 
     fetchDataFromApi(page, rowsPerPage){
@@ -388,8 +397,19 @@ export default class EnhancedTable extends Component {
                 />
             </div>
                 : <PageNotFound/>}
+                <div onClick={() => console.log('speed A')} style={this.state.floatingButtonStyle}>
+                    <Fab color="secondary" aria-label="Create" style={this.state.floatingButtonStyle} onClick={this.createButtonAction.bind(this)}>
+                        <AddIcon />
+                    </Fab>
+                </div>
             </div>
         );
+    }
+
+    createButtonAction(){
+        const downloadLink = document.createElement("a");
+        downloadLink.href = `/language/`
+        downloadLink.click();
     }
 
     handleDelete = (e, id) => {

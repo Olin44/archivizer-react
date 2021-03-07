@@ -80,21 +80,21 @@ class App extends Component {
                   </Link>
                 </li>
             )}
-            { (
+            { showUserContent && (
                 <li className="nav-item">
                   <Link to={"/languages"} className="nav-link">
                     Languages
                   </Link>
                 </li>
             )}
-            { (
+            { showUserContent && (
                 <li className="nav-item">
                   <Link to={"/qualifications"} className="nav-link">
                     Qualifications
                   </Link>
                 </li>
             )}
-            { (
+            { showUserContent && (
                 <li className="nav-item">
                   <Link to={"/files"} className="nav-link">
                     Files

@@ -20,5 +20,4 @@ export default new class LanguageService{
     create(body){
         return axios.post(this.SERVICE_URL, body)
     }
-
 }

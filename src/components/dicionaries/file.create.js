@@ -70,12 +70,12 @@ export default class LanguageCreate extends Component {
 
     fetchQualificationWithoutPagination(){
         QualificationService.getQualificationWithoutPagination()
-            .then(response => {console.log(response.data); this.setState({qualifications: response.data, loaded:true})});
+            .then(response => {console.log(response.data); this.setState({qualifications: response.data, qualification : response.data[0], loaded:true})});
     }
 
     fetchLanguagesWithoutPagination(){
         LanguagesService.getLanguagesWithoutPagination()
-            .then(response => {console.log(response.data); this.setState({languages: response.data, loaded:true})});
+            .then(response => {console.log(response.data); this.setState({languages: response.data, language : response.data[0], loaded:true})});
     }
 
     fetchRolesFromApi(){
@@ -247,7 +247,7 @@ export default class LanguageCreate extends Component {
                                                     label = 'Select roles'/>
                                         <MultichipselectComponent parentCallback = {this.usersOnChange}
                                                                   data = {this.state.users}
-                                                                  textField = 'nameAndSurname'
+                                                                  textField = 'creator'
                                                                   label = 'Select users'/>
                                     </div>) : null }
                             </Grid>

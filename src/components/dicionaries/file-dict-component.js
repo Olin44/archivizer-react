@@ -25,8 +25,8 @@ import FilesService from "../../services/files-service"
 import FindInPageIcon from '@material-ui/icons/FindInPage';
 import Fab from "@material-ui/core/Fab";
 
-function createData(id, creatorNameAndSurname, format, title) {
-    return { id, creatorNameAndSurname, format, title };
+function createData(id, creator, format, title) {
+    return { id, creator, format, title };
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -60,7 +60,6 @@ const headCells = [
     { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
     { id: 'format', numeric: false, disablePadding: false, label: 'Format' },
     { id: 'creator', numeric: false, disablePadding: false, label: 'Creator' },
-    {id: 'action', numeric: false, disablePadding: true, label: 'Detail info'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Create'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Update'},
     {id: 'action', numeric: false, disablePadding: true, label: 'Delete'}
@@ -157,7 +156,7 @@ const EnhancedTableToolbar = (props) => {
                 </Typography>
             ) : (
                 <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                    Languages
+                    Files
                 </Typography>
             )}
         </Toolbar>
@@ -222,7 +221,7 @@ export default class EnhancedTable extends Component {
             let tempRows = [];
             for(let i = 0; i < response.length; i++)
             {
-                tempRow = createData(response[i]['id'], response[i]['creatorNameAndSurname'], response[i]['format'], response[i]['title']);
+                tempRow = createData(response[i]['id'], response[i]['creator'], response[i]['format'], response[i]['title']);
                 tempRows.push(tempRow);
             }
             console.log(tempRows);
@@ -358,14 +357,11 @@ export default class EnhancedTable extends Component {
                                                 </TableCell>
                                                 <TableCell align="left">{row.title}</TableCell>
                                                 <TableCell align="left">{row.format}</TableCell>
-                                                <TableCell align="left">{row.creatorNameAndSurname}</TableCell>
-                                                <TableCell align="left"> <a href={`/file/${row.id}`}>
-                                                    <FindInPageIcon />
-                                                </a></TableCell>
+                                                <TableCell align="left">{row.creator}</TableCell>
                                                 <TableCell align="left"> <a href={`/file/`}>
                                                     <AddIcon/>
                                                 </a></TableCell>
-                                                <TableCell align="left"> <a href={`/languages/${row.id}`}>
+                                                <TableCell align="left"> <a href={`/file/${row.id}`}>
                                                     <PencilFill/>
                                                 </a></TableCell>
                                                 <TableCell>
@@ -403,9 +399,9 @@ export default class EnhancedTable extends Component {
     handleDelete = (e, id) => {
         console.log(id);
         e.preventDefault();
-        LanguageService
-            .deleteLanguage(id)
-            .then(r => alert('Language deleted!'))
+        FilesService
+            .delete(id)
+            .then(r => alert('File deleted!'))
             .catch(error => {if( error.response ){
                 let violationsString = ''
                 console.log(error.response.data['violations'].length);

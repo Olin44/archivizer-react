@@ -22,7 +22,7 @@ class UserService {
     return axios.get(API_URL2 + 'admin', { headers: authHeader() });
   }
 
-  deleteUser(id){
+  deleteById(id){
     return axios.delete(API_URL + id, { headers: authHeader() })
   }
 

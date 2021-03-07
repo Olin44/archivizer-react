@@ -295,7 +295,7 @@ export default class LanguageCreate extends Component {
                                         <MultichipselectComponent parentCallback = {this.usersOnChange}
                                                                   selected = {this.state.selectedUsers}
                                                                   data = {this.state.users}
-                                                                  textField = 'nameAndSurname'
+                                                                  textField = 'creator'
                                                                   label = 'Select users'/>
                                     </div>
                             </Grid>

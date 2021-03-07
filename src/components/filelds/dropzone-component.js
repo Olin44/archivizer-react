@@ -41,7 +41,10 @@ export default class DropzoneDialogExample extends Component {
                 <DropzoneDialog
                     open={this.state.open}
                     onSave={this.handleSave.bind(this)}
-                    acceptedFiles={['image/jpeg', 'image/png', 'image/bmp', 'application/pdf']}
+                    acceptedFiles={['text/plain', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-powerpoint',
+                        'application/msword', 'image/jpeg', 'image/png', 'image/bmp', 'application/pdf']}
                     showPreviews={true}
                     maxFileSize={5000000}
                     onClose={this.handleClose.bind(this)}

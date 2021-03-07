@@ -11,7 +11,7 @@ export default new class FilesService{
         return axios.get(this.SERVICE_URL + '/count' + '?roles=' + this.user.roles.toString(), this.config)
     }
 
-    deleteLanguage(id){
+    delete(id){
         return axios.delete('http://localhost:8080/api/file/' + id, this.config)
     }
 

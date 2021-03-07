@@ -22,6 +22,10 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import UsersService from "../../services/users.service";
 import {CheckSquare, CheckSquareFill, PencilFill} from "react-bootstrap-icons";
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import AuthService from "../../services/auth.service";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
+import UserService from "../../services/user.service";
 
 function createData(id, login, email, isActive) {
     return { id, login, email, isActive };
@@ -57,8 +61,19 @@ const headCells = [
     { id: 'login', numeric: false, disablePadding: true, label: 'Login' },
     { id: 'email', numeric: false, disablePadding: false, label: 'email' },
     { id: 'isActive', numeric: false, disablePadding: false, label: 'isActive' },
-    {id: 'action', numeric: false, disablePadding: true, label: 'Actions'}
 ];
+
+function getHeadCells(){
+    console.log(AuthService.getCurrentUser().roles);
+    if(!AuthService.getCurrentUser().roles.includes("ROLE_ADMIN")){
+        return headCells;
+    } else {
+        return headCells.slice().concat(
+            [
+                {id: 'action_update', numeric: false, disablePadding: true, label: 'Update'},
+                {id: 'action_delete', numeric: false, disablePadding: true, label: 'Delete'}]);
+    }
+}
 
 function EnhancedTableHead(props) {
     const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -77,7 +92,7 @@ function EnhancedTableHead(props) {
                         inputProps={{ 'aria-label': 'select all desserts' }}
                     />
                 </TableCell>
-                {headCells.map((headCell) => (
+                {getHeadCells().map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.numeric ? 'right' : 'left'}
@@ -225,7 +240,6 @@ export default class EnhancedTable extends Component {
             {
                 tempRow = createData(response[i]['id'], response[i]['login'], response[i]['email'], response[i]['active']);
                 tempRows.push(tempRow);
-                console.log(response[i]);
             }
             return tempRows;
         }
@@ -235,18 +249,12 @@ export default class EnhancedTable extends Component {
 
     setRows = (data) => {
         let copyFoo = { ...this.state, rows: data};
-        console.log((copyFoo));
-        this.setState({copyFoo}, function () {
-            console.log(this.state);
-        });
-
+        this.setState({copyFoo});
     }
 
     setCount = (data) => {
         let copyFoo = { ...this.state, size: data};
-        this.setState({copyFoo}, function () {
-            console.log(this.state);
-        });
+        this.setState({copyFoo});
     }
 
     fetchUsersCountFromAp(){
@@ -371,9 +379,14 @@ export default class EnhancedTable extends Component {
                                                 </TableCell>
                                                 <TableCell align="left">{row.email}</TableCell>
                                                 <TableCell align="left">{this.formatYesNo(row.isActive)}</TableCell>
-                                                <TableCell align="left"> <a href={`/users/${row.id}`}>
-                                                    <PencilFill/>
-                                                </a></TableCell>
+                                                { AuthService.getCurrentUser().roles.includes("ROLE_ADMIN") ?
+                                                    <TableCell align="left"> <a href={`/users/${row.id}`}>
+                                                        <PencilFill/>
+                                                    </a></TableCell> : null}
+                                                { AuthService.getCurrentUser().roles.includes("ROLE_ADMIN") ?
+                                                    <TableCell>
+                                                        <DeleteIcon onClick={(e) =>this.handleDelete(e, row.id)}/>
+                                                    </TableCell> : null}
                                             </TableRow>
                                         );
                                     })}
@@ -397,4 +410,25 @@ export default class EnhancedTable extends Component {
             </div>
         );
     }
+    handleDelete = (e, id) => {
+        console.log(id);
+        e.preventDefault();
+        UserService
+            .deleteById(id)
+            .then(r => alert('User deleted!'))
+            .catch(error => {if( error.response ){
+                let violationsString = ''
+                console.log(error.response.data['violations'].length);
+                for (let i=0; i < error.response.data['violations'].length; i++) {
+                    violationsString = violationsString
+                        .concat('File id: ' + error.response.data['violations'][i]['id'])
+                        .concat(', ')
+                        .concat('File title: ' +  error.response.data['violations'][i]['title'])
+                        .concat('.\n');
+                }
+                alert(error.response.data['message'].toString().concat(': Related files exist!') + '\n' + violationsString);
+            }});
+
+    }
+
 }
