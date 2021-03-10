@@ -14,7 +14,6 @@ export default new class FileService{
     }
 
     create(body){
-        console.log('dupa' + body);
         return axios.post(this.SERVICE_URL, body)}
 
 

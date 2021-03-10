@@ -31,9 +31,9 @@ export default class UsersDetailsComponent extends Component {
                 type: yup.string().required(),
                 description: yup.string(),
                 canBeDeleted : yup.boolean(),
-                day : yup.number().integer().min(0),
-                month : yup.number().integer().min(0),
-                year : yup.number().integer().min(0)
+                day : yup.number().integer().typeError('must be a number').min(0),
+                month : yup.number().integer().typeError('must be a number').min(0),
+                year : yup.number().integer().typeError('must be a number').min(0)
 
             },
             floatingButtonStyle: {
@@ -137,12 +137,12 @@ export default class UsersDetailsComponent extends Component {
                 {this.state.loaded ? (
                     <div style={{ minHeight: '90vh'}}>
                         <BreadcrumbsComponent subSites={this.state.subSites}
-                                              actualSiteName={"Edit language details"}
+                                              actualSiteName={"Create qualification"}
                                               actualSiteIcon={<HomeIcon/>}/>
                         <Grid alignItems={'center'} container direction="column" style={{ backgroundColor: '#f2f2f2' }}>
                             <Grid item xs={12} alignItems={'center'} >
                                 <Typography variant="subtitle1" gutterBottom style={{ color:'#266eb6'}}>
-                                    Information about language
+                                    Create qualification
                                 </Typography>
                                 <Divider/>
                                 <CustomFormFieldComponent name={'description'} label={'Description'}
@@ -164,14 +164,14 @@ export default class UsersDetailsComponent extends Component {
                                 />
                                 {this.state.canBeDeleted ? (
                                     <div>
-                                        Archivizer after(time after which the file will be deleted)
-                                        <CustomFormFieldComponent name={'day'} label={'Day'}
-                                                                  required={true} defaultValue={'Day'}
+                                        Delete after(time after which the file will be deleted)
+                                        <CustomFormFieldComponent name={'day'} label={'Days'}
+                                                                  required={true} defaultValue={'Days'}
                                                                   validationSchema = { this.state.validationSchema.day}
                                                                   parentCallback = {this.dayOnChange}
                                         />
                                         <CustomFormFieldComponent name={'month'} label={'Month'}
-                                                                  required={true} defaultValue={'Month'}
+                                                                  required={true} defaultValue={'Months'}
                                                                   validationSchema = { this.state.validationSchema.month}
                                                                   parentCallback = {this.monthOnChange}
                                         />
